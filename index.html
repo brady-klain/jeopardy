@@ -733,15 +733,23 @@ function startPlayerSession(key,cluster,room,name){
   myName=name;myRoom=room;myId='p_'+Math.random().toString(36).slice(2,9);myScore=0;isLocked=true;hasBuzzed=false;
   document.getElementById('p-room-lbl').textContent='ROOM: '+room;document.getElementById('sd-name').textContent=name;updatePScore();showScreen('player-screen');initPusherPlayer(key,cluster);
 }
-function initPusherPlayer(key,cluster){
-  if(typeof Pusher==='undefined'){document.getElementById('pstatus').textContent='Loading…';setTimeout(()=>{if(typeof Pusher!=='undefined')initPusherPlayer(key,cluster);else{document.getElementById('jerr').textContent='Connection library failed to load. Check internet + disable ad blockers, then refresh.';showScreen('join-screen');}},1500);return;}
-  showConn(true);Pusher.logToConsole=false;
+function initPusherPlayer(key,cluster,room,name){
+  showConn(true);
   try{
-    pusher=new Pusher(key,{cluster});
-    pusher.connection.bind('connected',()=>{showConn(false);subscribePlayer();});
-    pusher.connection.bind('failed',()=>{showConn(false);document.getElementById('jerr').textContent='Connection failed — check your internet.';showScreen('join-screen');});
-    pusher.connection.bind('error',e=>{showConn(false);document.getElementById('jerr').textContent='Connection error — try the link again.';showScreen('join-screen');console.error(e);});
-  }catch(err){showConn(false);document.getElementById('jerr').textContent='Error: '+err.message;showScreen('join-screen');}
+    pusher = new Pusher(key, {cluster});
+    pusher.connection.bind('connected', () => {
+      showConn(false);
+      subscribePlayer();
+      showToast('Connected to room!');
+    });
+    pusher.connection.bind('error', (err) => {
+      console.error(err);
+      document.getElementById('jerr').textContent = 'Connection error. Check Pusher key.';
+      showConn(false);
+    });
+  } catch(e){
+    document.getElementById('jerr').textContent = 'Pusher error: ' + e.message;
+  }
 }
 function subscribePlayer(){
   channel=pusher.subscribe('jeopardy-'+myRoom.toLowerCase());
