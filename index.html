@@ -6,6 +6,18 @@
 <title>Jeopardy!</title>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
+  const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  databaseURL: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 (function(){
   function loadScript(urls,i,cb){if(i>=urls.length){if(cb)cb(false);return;}var s=document.createElement('script');s.src=urls[i];s.onload=function(){if(cb)cb(true);};s.onerror=function(){loadScript(urls,i+1,cb);};document.head.appendChild(s);}
   window._pusherReady=false;window._qrReady=false;
